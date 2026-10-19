@@ -1,0 +1,18 @@
+PROJETO: ROÇA.AI Viário — Sprint 4 (Versão Final, APK e Plano de Negócio - CCR Motiva)
+
+INTEGRANTES DO GRUPO:
+- Davi Xavier — RM563572
+- Felipe Ramalho — RM565073
+- Gabriel Pereira — RM563571
+- Gabriel Simioni — RM563475
+- Guilherme Vega — RM562655
+- Luiz Henrique — RM563795
+
+LINK DO REPOSITÓRIO GITHUB FINAL (COM README CONSOLIDADO E PLANO DE NEGÓCIO):
+https://www.google.com/search?q=https://github.com/SEU-USUARIO/Sprint-4-CROSS-PLATAFORM
+
+LINK PARA DOWNLOAD DO APK FINAL (ANDROID - GOOGLE DRIVE / GITHUB RELEASES):
+https://drive.google.com/file/d/COLE_AQUI_O_ID_DO_SEU_APK/view?usp=sharing
+
+LINK DO VÍDEO DE PITCH E DEMONSTRAÇÃO FINAL NO YOUTUBE (NÃO LISTADO - ATÉ 5 MIN):
+https://youtu.be/COLE_AQUI_O_LINK_DO_SEU_VIDEO_DE_PITCH
