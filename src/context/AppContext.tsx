@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { Trecho, Ocorrencia, trechosIniciais, ocorrenciasIniciais } from '../mock/dadosMock';
 import { storageService, AcaoOffline } from '../services/storageService';
 
@@ -32,16 +33,29 @@ interface AppContextData {
 const AppContext = createContext<AppContextData>({} as AppContextData);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const estadoInicial = storageService.carregarEstadoInicial();
-
-  const [trechos, setTrechos] = useState<Trecho[]>(estadoInicial.trechos);
-  const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>(estadoInicial.ocorrencias);
+  const [hidratado, setHidratado] = useState<boolean>(false);
+  const [trechos, setTrechos] = useState<Trecho[]>(trechosIniciais);
+  const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>(ocorrenciasIniciais);
   const [modoOffline, setModoOffline] = useState<boolean>(false);
-  const [filaOffline, setFilaOffline] = useState<AcaoOffline[]>(estadoInicial.filaOffline);
+  const [filaOffline, setFilaOffline] = useState<AcaoOffline[]>([]);
   const [sincronizando, setSincronizando] = useState<boolean>(false);
-  const [ultimaSincronizacao, setUltimaSincronizacao] = useState<string>(
-    estadoInicial.ultimaSincronizacao
-  );
+  const [ultimaSincronizacao, setUltimaSincronizacao] = useState<string>('');
+
+  // Hidratação: carrega do disco (AsyncStorage) o estado salvo na última sessão
+  useEffect(() => {
+    let ativo = true;
+    storageService.carregarEstadoInicial().then((estado) => {
+      if (!ativo) return;
+      setTrechos(estado.trechos);
+      setOcorrencias(estado.ocorrencias);
+      setFilaOffline(estado.filaOffline);
+      setUltimaSincronizacao(estado.ultimaSincronizacao);
+      setHidratado(true);
+    });
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   const registrarAcaoNaFilaOuSync = (
     tipo: AcaoOffline['tipo'],
@@ -127,8 +141,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         nova.alturaEstimadaCm && nova.alturaEstimadaCm > t.alturaVegetacao
           ? nova.alturaEstimadaCm
           : novoStatus === 'critico' && t.alturaVegetacao <= 30
-          ? 32.0
-          : t.alturaVegetacao;
+            ? 32.0
+            : t.alturaVegetacao;
 
       const novosDiasLimite =
         novoStatus === 'critico' || novaAltura >= 30
@@ -229,14 +243,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const resetarDadosDemo = () => {
-    storageService.limparTudo();
     setTrechos(trechosIniciais);
     setOcorrencias(ocorrenciasIniciais);
     setFilaOffline([]);
     setModoOffline(false);
-    const agora = new Date();
-    setUltimaSincronizacao(`${agora.toLocaleDateString('pt-BR')} às ${agora.toTimeString().slice(0, 5)}`);
+    storageService.limparTudo().then((formatado) => setUltimaSincronizacao(formatado));
   };
+
+  if (!hidratado) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B1F3A' }}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
+  }
 
   return (
     <AppContext.Provider

@@ -32,7 +32,7 @@ O **ROÇA.AI Viário** transforma a manutenção de áreas verdes rodoviárias d
 1. **Predição de Janela de Corte (IA + Telemetria):** Combina histórico de vistorias e taxa diária de crescimento vegetativo (`cm/dia`) para estimar exatamente em quantos dias cada segmento quilométrico atingirá o limite de 30 cm da ARTESP.
 2. **Despacho Priorizado por Criticidade:** Classifica toda a malha viária em três níveis acionáveis — **Normal (< 10 cm)**, **Atenção (10 a 30 cm)** e **Crítico (> 30 cm)** — direcionando as frentes de roçada apenas para onde há risco real.
 3. **Operação Offline-First em Campo:** Permite que fiscais de tráfego e líderes de conservação registrem ocorrências georreferenciadas via GPS nativo (`expo-location`) e deem baixa operacional mesmo em trechos de serra ou túneis sem cobertura 4G/5G, sincronizando automaticamente ao retomar sinal.
-4. **Governança e Blindagem Regulatória:** Gera trilha de auditoria imutável (data, hora, coordenadas GPS, responsável e altura pós-corte) para defesa técnica junto à ARTESP.
+4. **Governança e Blindagem Regulatória:** Gera trilha de auditoria rastreável (data, hora, coordenadas GPS, responsável e altura pós-corte) para defesa técnica junto à ARTESP.
 
 ---
 
@@ -88,7 +88,7 @@ Estrutura de custos enxuta baseada em arquitetura Cloud-Native escalável (para 
 | **TOTAL DE CUSTOS OPERACIONAIS** | **Operação Base (Piloto SP-021 a 500 km)** | **R$ 11.400,00 / mês** | **R$ 136.800,00 / ano** |
 
 * **Viabilidade Econômica no Piloto (177 km):** Mesmo em um único ativo (SP-021), a operação já atinge **breakeven operacional imediato** (Faturamento de R$ 225,5 mil no Ano 1 contra R$ 136,8 mil de custo anual, gerando superávit de **R$ 88,7 mil** já no primeiro contrato).
-* **Escalabilidade de Margem:** Como o custo de infraestrutura cresce de forma sublinear, a partir da 2ª concessionária do grupo Motiva a **Margem Bruta SaaS supera 72%**.
+* **Escalabilidade de Margem:** O custo base de R$ 11.400/mês comporta até 500 km. No piloto (177 km), o MRR de R$ 15.045 cobre os custos com margem operacional de ~24% (o superávit do Ano 1 vem principalmente da taxa de setup). Ao chegar a 500 km, o MRR sobe para R$ 42.500/mês e a margem operacional atinge ~73% (R$ 31.100 de resultado mensal). Acima de 500 km, assume-se que a infraestrutura cresce de forma incremental, não proporcional ao número de km (premissa do grupo, a validar com a Motiva).
 
 ---
 
@@ -117,7 +117,7 @@ Estrutura de custos enxuta baseada em arquitetura Cloud-Native escalável (para 
 
 ## 8. Impacto Esperado para a Motiva e Rodovias Concessionadas
 
-1. **Redução de até 85% no Risco de Penalidades Regulatórias (ARTESP):** Antecipação de todos os pontos que se aproximam de 30 cm (status *Atenção*), eliminando autuações por obstrução de placas ou excesso vegetativo. Evitar apenas **uma única multa contratual (~R$ 48,5 mil)** já paga mais de 3 meses de assinatura do sistema para toda a SP-021.
-2. **Redução de 22% a 30% no Custo Operacional de Deslocamento (Diesel e H/H):** Eliminação de viagens improdutivas de tratores e caminhões de apoio para trechos que permanecem abaixo de 10 cm em períodos de estiagem.
+1. **Meta de redução de até 85% no risco de penalidades regulatórias (ARTESP)** *(estimativa do grupo)*: Antecipação de todos os pontos que se aproximam de 30 cm (status *Atenção*), eliminando autuações por obstrução de placas ou excesso vegetativo. Evitar apenas **uma única multa contratual (valor ilustrativo de ~R$ 48,5 mil, a validar com o histórico de autuações da Motiva)** já paga mais de 3 meses de assinatura do sistema para toda a SP-021.
+2. **Meta de redução de 22% a 30% no custo de deslocamento (diesel e H/H)** *(estimativa do grupo, a validar em piloto)*: Eliminação de viagens improdutivas de tratores e caminhões de apoio para trechos que permanecem abaixo de 10 cm em períodos de estiagem.
 3. **Aumento da Segurança Viária e Drenagem:** Visibilidade integral de placas de velocidade/regulamentação, defensas metálicas e sarjetas desobstruídas, reduzindo o risco de aquaplanagem e sinistros na SP-021.
 4. **Sustentabilidade e ESG:** Menor consumo de combustível fóssil pela frota pesada de conservação (redução direta de emissões de $\text{CO}_2$ no Escopo 1 da Motiva) e gestão inteligente da biomassa nas margens rodoviárias.

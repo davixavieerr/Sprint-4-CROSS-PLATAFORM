@@ -1,8 +1,8 @@
 # Documento de Testes e Validação Final — Sprint 4
 
 **Projeto:** ROÇA.AI Viário — Monitoramento e Manutenção Preditiva (SP-021 • CCR Motiva)  
-**Versão da Build:** `2.0.0` (Android APK / Expo SDK 53 / Web)  
-**Ambiente de Teste:** Dispositivo Android (APK Instalado) / Emulador Android / Web  
+**Versão da Build:** `2.0.0` (Expo SDK 53 / Android / Web)  
+**Ambiente de Teste:** Android (Expo) / Emulador Android / Web  
 
 **Integrantes / Responsáveis:**
 * Davi Xavier — RM563572
@@ -18,7 +18,7 @@
 
 | Item / Pendência da Sprint 3 | Solução Implementada na Sprint 4 | Status |
 | :--- | :--- | :---: |
-| **Persistência Local e Modo Offline-First** | Implementado `storageService.ts` com persistência local, alternador de modo `Offline / Online` na Home e fila de sincronização (`filaOffline`) para zonas sem sinal na SP-021. | **Concluído** |
+| **Persistência Local e Modo Offline-First** | Implementado `storageService.ts` com persistência em disco via `AsyncStorage` (os dados sobrevivem ao fechamento do app e são carregados na inicialização), alternador de modo `Offline / Online` na Home e fila de sincronização (`filaOffline`) para zonas sem sinal na SP-021. | **Concluído** |
 | **Integração com geolocalização nativa (`expo-location`)** | Adicionado botão `📍 Capturar GPS` em `NovaOcorrenciaScreen` usando `expo-location` com fallback automático para o marco quilométrico da SP-021. | **Concluído** |
 | **Vínculo entre Ocorrências e Estado do Trecho** | Ocorrências abertas agora aparecem vinculadas em `DetalhesTrechoScreen`, exibem contador no card da `HomeScreen`, atualizam a severidade do trecho e podem ser baixadas individualmente ou junto com a roçada. | **Concluído** |
 | **Correção de Bug de Duplo `navigation.goBack()`** | Corrigido o fluxo de salvamento em `NovaOcorrenciaScreen.tsx` que chamava `goBack()` duas vezes ao confirmar o alerta. | **Concluído** |
@@ -37,13 +37,14 @@
 | **CT-04** | **Validação de Erro em Formulário** | 1. Abrir "+ Ocorrência".<br>2. Tentar salvar com campos obrigatórios vazios. | Bloquear envio e exibir mensagens de erro em vermelho nos campos KM e Observações. | Envio bloqueado com feedback visual claro nos campos inválidos. | **Passou** |
 | **CT-05** | **Baixa Operacional de Roçada e Ocorrências** | 1. No trecho crítico, clicar em "Registrar Roçada Concluída".<br>2. Verificar ocorrências do trecho e voltar à Home. | A altura cai para 5.0 cm, o status muda para Verde (Normal), ocorrências abertas do trecho são resolvidas e o SLA na Home sobe. | Estado global, ocorrências e KPIs de SLA atualizados em tempo real. | **Passou** |
 | **CT-06** | **Captura de GPS em Campo (`expo-location`)** | 1. Abrir "+ Ocorrência".<br>2. Clicar em "📍 Capturar GPS".<br>3. Salvar ocorrência e verificar retorno à tela anterior. | Capturar Latitude/Longitude (nativa ou marco SP-021), anexar ao registro e retornar 1 nível na pilha de navegação sem erro. | Coordenadas registradas com precisão e navegação fluida corrigida. | **Passou** |
-| **CT-07** | **Operação Offline-First e Sincronização** | 1. Na Home, tocar na barra de status para ativar "Modo Campo Offline".<br>2. Registrar nova ocorrência.<br>3. Clicar em "🔄 Sincronizar". | Ocorrência deve entrar na fila offline (`1 na fila`) e, ao sincronizar, atualizar o status para `☁️ Sincronizado` e voltar para Online. | Persistência local e sincronização com a Central CCR funcionando sem perda de dados. | **Passou** |
+| **CT-07** | **Operação Offline-First e Sincronização** | 1. Na Home, tocar na barra de status para ativar "Modo Campo Offline".<br>2. Registrar nova ocorrência.<br>3. Clicar em "🔄 Sincronizar". | Ocorrência deve entrar na fila offline (`1 na fila`) e, ao sincronizar, atualizar o status para `☁️ Sincronizado` e voltar para Online. | Fila offline e sincronização simulada com a Central CCR funcionando sem perda de dados. | **Passou** |
 | **CT-08** | **Painel Executivo & Reset de Demonstração** | 1. Clicar em "📊 ROI & SLA" no topo da Home.<br>2. Conferir KPIs financeiros.<br>3. Clicar em "Restaurar Dados Iniciais". | Exibir SLA ARTESP, multas mitigadas, síntese do modelo SaaS e restaurar os dados originais ao acionar o reset. | Painel executivo renderizado com precisão e reset restaurando o estado inicial. | **Passou** |
+| **CT-09** | **Persistência de Dados em Disco** | 1. Registrar uma nova ocorrência.<br>2. Fechar o aplicativo por completo.<br>3. Abrir o aplicativo novamente. | A ocorrência registrada deve continuar disponível após reabrir o app (dados carregados do `AsyncStorage`). | Ocorrência mantida após fechar e reabrir o aplicativo. | **Passou** |
 
 ---
 
 ## 3. Conclusão da Qualidade (QA)
-* **Total de Cenários Executados:** 8
-* **Aprovados:** 8
+* **Total de Cenários Executados:** 9
+* **Aprovados:** 9
 * **Falhas:** 0
 * **Taxa de Sucesso:** 100% — Aplicação aprovada para geração de APK e apresentação final.

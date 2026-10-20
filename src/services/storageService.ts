@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Trecho, Ocorrencia, trechosIniciais, ocorrenciasIniciais } from '../mock/dadosMock';
 
 const CHAVE_TRECHOS = '@roca_ai_motiva:trechos_v4';
@@ -12,96 +13,102 @@ export interface AcaoOffline {
   timestamp: string;
 }
 
-// Cache em memória resiliente para ambientes nativos sem localStorage global
-const memoriaLocal: Record<string, string> = {};
-
-function lerStorage(chave: string): string | null {
-  try {
-    if (typeof globalThis !== 'undefined' && 'localStorage' in globalThis && globalThis.localStorage) {
-      return globalThis.localStorage.getItem(chave);
-    }
-  } catch {
-    // Fallback silencioso para memória local
-  }
-  return memoriaLocal[chave] ?? null;
+export interface EstadoPersistido {
+  trechos: Trecho[];
+  ocorrencias: Ocorrencia[];
+  filaOffline: AcaoOffline[];
+  ultimaSincronizacao: string;
 }
 
-function gravarStorage(chave: string, valor: string): void {
-  memoriaLocal[chave] = valor;
+function agoraFormatado(): string {
+  const agora = new Date();
+  return `${agora.toLocaleDateString('pt-BR')} às ${agora.toTimeString().slice(0, 5)}`;
+}
+
+// Persistência real em disco (AsyncStorage): sobrevive ao fechamento do app no Android/iOS
+// e usa localStorage automaticamente na versão Web.
+async function gravar(chave: string, valor: unknown): Promise<void> {
   try {
-    if (typeof globalThis !== 'undefined' && 'localStorage' in globalThis && globalThis.localStorage) {
-      globalThis.localStorage.setItem(chave, valor);
-    }
-  } catch {
-    // Fallback silencioso para memória local
+    await AsyncStorage.setItem(chave, typeof valor === 'string' ? valor : JSON.stringify(valor));
+  } catch (erro) {
+    console.warn('[storageService] Falha ao gravar', chave, erro);
+  }
+}
+
+async function lerJson<T>(chave: string, padrao: T): Promise<T> {
+  try {
+    const raw = await AsyncStorage.getItem(chave);
+    return raw ? (JSON.parse(raw) as T) : padrao;
+  } catch (erro) {
+    // Dado corrompido ou storage indisponível: volta ao cenário padrão sem derrubar o app
+    console.warn('[storageService] Falha ao ler', chave, erro);
+    return padrao;
   }
 }
 
 export const storageService = {
-  carregarEstadoInicial(): {
-    trechos: Trecho[];
-    ocorrencias: Ocorrencia[];
-    filaOffline: AcaoOffline[];
-    ultimaSincronizacao: string;
-  } {
-    const rawTrechos = lerStorage(CHAVE_TRECHOS);
-    const rawOcorrencias = lerStorage(CHAVE_OCORRENCIAS);
-    const rawFila = lerStorage(CHAVE_FILA_SYNC);
-    const rawSync = lerStorage(CHAVE_ULTIMA_SYNC);
+  async carregarEstadoInicial(): Promise<EstadoPersistido> {
+    const [trechos, ocorrencias, filaOffline] = await Promise.all([
+      lerJson<Trecho[]>(CHAVE_TRECHOS, trechosIniciais),
+      lerJson<Ocorrencia[]>(CHAVE_OCORRENCIAS, ocorrenciasIniciais),
+      lerJson<AcaoOffline[]>(CHAVE_FILA_SYNC, []),
+    ]);
 
-    return {
-      trechos: rawTrechos ? JSON.parse(rawTrechos) : trechosIniciais,
-      ocorrencias: rawOcorrencias ? JSON.parse(rawOcorrencias) : ocorrenciasIniciais,
-      filaOffline: rawFila ? JSON.parse(rawFila) : [],
-      ultimaSincronizacao: rawSync || '19/10/2026 às 18:30',
-    };
+    let ultimaSincronizacao = '19/10/2026 às 18:30';
+    try {
+      ultimaSincronizacao = (await AsyncStorage.getItem(CHAVE_ULTIMA_SYNC)) || ultimaSincronizacao;
+    } catch {
+      // mantém o valor padrão
+    }
+
+    return { trechos, ocorrencias, filaOffline, ultimaSincronizacao };
   },
 
-  salvarTrechos(trechos: Trecho[]): void {
-    gravarStorage(CHAVE_TRECHOS, JSON.stringify(trechos));
+  async salvarTrechos(trechos: Trecho[]): Promise<void> {
+    await gravar(CHAVE_TRECHOS, trechos);
   },
 
-  salvarOcorrencias(ocorrencias: Ocorrencia[]): void {
-    gravarStorage(CHAVE_OCORRENCIAS, JSON.stringify(ocorrencias));
+  async salvarOcorrencias(ocorrencias: Ocorrencia[]): Promise<void> {
+    await gravar(CHAVE_OCORRENCIAS, ocorrencias);
   },
 
-  salvarFilaOffline(fila: AcaoOffline[]): void {
-    gravarStorage(CHAVE_FILA_SYNC, JSON.stringify(fila));
+  async salvarFilaOffline(fila: AcaoOffline[]): Promise<void> {
+    await gravar(CHAVE_FILA_SYNC, fila);
   },
 
-  salvarUltimaSincronizacao(dataHora: string): void {
-    gravarStorage(CHAVE_ULTIMA_SYNC, dataHora);
+  async salvarUltimaSincronizacao(dataHora: string): Promise<void> {
+    await gravar(CHAVE_ULTIMA_SYNC, dataHora);
   },
 
-  limparTudo(): void {
-    gravarStorage(CHAVE_TRECHOS, JSON.stringify(trechosIniciais));
-    gravarStorage(CHAVE_OCORRENCIAS, JSON.stringify(ocorrenciasIniciais));
-    gravarStorage(CHAVE_FILA_SYNC, JSON.stringify([]));
-    const agora = new Date();
-    const formatado = `${agora.toLocaleDateString('pt-BR')} às ${agora.toTimeString().slice(0, 5)}`;
-    gravarStorage(CHAVE_ULTIMA_SYNC, formatado);
+  async limparTudo(): Promise<string> {
+    const formatado = agoraFormatado();
+    await Promise.all([
+      gravar(CHAVE_TRECHOS, trechosIniciais),
+      gravar(CHAVE_OCORRENCIAS, ocorrenciasIniciais),
+      gravar(CHAVE_FILA_SYNC, []),
+      gravar(CHAVE_ULTIMA_SYNC, formatado),
+    ]);
+    return formatado;
   },
 
+  // Sincronização SIMULADA: não há backend real nesta versão acadêmica.
+  // A latência de rede é emulada e a "Central CCR Motiva" é representada pelo próprio armazenamento local.
   async sincronizarComApiCentral(
     trechos: Trecho[],
     ocorrencias: Ocorrencia[],
-    fila: AcaoOffline[]
+    _fila: AcaoOffline[]
   ): Promise<{ ocorrenciasAtualizadas: Ocorrencia[]; horarioSync: string }> {
-    // Simula latência de rede com API REST / PostGIS da Central CCR Motiva
     await new Promise((resolve) => setTimeout(resolve, 650));
 
-    const ocorrenciasAtualizadas = ocorrencias.map((oc) => ({
-      ...oc,
-      sincronizado: true,
-    }));
+    const ocorrenciasAtualizadas = ocorrencias.map((oc) => ({ ...oc, sincronizado: true }));
+    const horarioSync = agoraFormatado();
 
-    const agora = new Date();
-    const horarioSync = `${agora.toLocaleDateString('pt-BR')} às ${agora.toTimeString().slice(0, 5)}`;
-
-    this.salvarTrechos(trechos);
-    this.salvarOcorrencias(ocorrenciasAtualizadas);
-    this.salvarFilaOffline([]);
-    this.salvarUltimaSincronizacao(horarioSync);
+    await Promise.all([
+      this.salvarTrechos(trechos),
+      this.salvarOcorrencias(ocorrenciasAtualizadas),
+      this.salvarFilaOffline([]),
+      this.salvarUltimaSincronizacao(horarioSync),
+    ]);
 
     return { ocorrenciasAtualizadas, horarioSync };
   },

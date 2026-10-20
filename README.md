@@ -17,8 +17,8 @@ Aplicativo mobile multiplataforma desenvolvido para **fiscalização georreferen
 
 ## 🔗 Links Oficiais de Entrega (Sprint 4)
 
-* **📦 Download do APK Final (Android):** [Baixar APK ROÇA.AI Viário v2.0.0 (Google Drive / GitHub Releases)](https://github.com/SEU-USUARIO/Sprint-4-CROSS-PLATAFORM/releases/latest) *(Substitua pelo link final do APK gerado)*
-* **🎬 Vídeo Final de Pitch e Demonstração (Até 5 min — YouTube Não Listado):** [Assistir ao Pitch e Demonstração Final](https://youtu.be/SEU_LINK_DO_PITCH_SPRINT4) *(Substitua pelo link do vídeo da Sprint 4)*
+* **📦 Download do APK Final (Android):** [Baixar APK ROÇA.AI Viário](https://github.com/SEU-USUARIO/Sprint-4-CROSS-PLATAFORM/releases/latest) *(Substitua pelo link final do APK gerado)*
+* **🎬 Vídeo Final de Pitch e Demonstração (YouTube Não Listado):** [Assistir ao Pitch e Demonstração Final](https://youtu.be/SEU_LINK_DO_PITCH_SPRINT4) *(Substitua pelo link do vídeo da Sprint 4)*
 * **📹 Vídeo de Demonstração Técnica da Sprint 3 (Histórico):** [Assistir à Demonstração da Sprint 3](https://youtu.be/cqq3-ENDleY)
 * **📄 Documento Completo do Plano de Negócio:** [`PLANO_DE_NEGOCIO.md`](./PLANO_DE_NEGOCIO.md)
 * **📋 Relatório de Testes Manuais e Regressão:** [`TESTES.md`](./TESTES.md)
@@ -45,7 +45,7 @@ O **ROÇA.AI Viário** substitui o modelo tradicional reativo (baseado em cronog
 | **Linguagem** | TypeScript | `~5.8.3` (Tipagem estática estrita) |
 | **Navegação** | React Navigation (Native Stack) | `^7.2.0` (Rotas tipadas via `RootStackParamList`) |
 | **Gerenciamento de Estado** | React Context API (`AppContext`) | Sincronização reativa global entre telas |
-| **Persistência & Offline-First** | `storageService.ts` + Fila Local | Persistência local resiliente e fila de sincronização |
+| **Persistência & Offline-First** | `storageService.ts` + `AsyncStorage` + Fila Local | `2.1.2` — persistência em disco (os dados sobrevivem ao fechamento do app) e fila de sincronização simulada |
 | **Geolocalização Nativa** | `expo-location` | `~18.1.6` (Captura de Latitude/Longitude em campo) |
 | **Empacotamento Android** | Expo Application Services (EAS Build) | Perfil configurado em `eas.json` para geração de `.apk` |
 
@@ -63,7 +63,7 @@ A equipe optou estrategicamente por **manter e evoluir a arquitetura em React Na
 | **Sprint 1** | **Concepção, Descoberta e Prototipação** | Mapeamento das dores operacionais da CCR Motiva na SP-021, análise das regras de SLA da ARTESP (limite de 30 cm), definição das personas e protótipo navegável de interface. |
 | **Sprint 2** | **Arquitetura Base e Estrutura de Navegação** | Configuração do projeto React Native + Expo com TypeScript, implementação da identidade visual institucional (`cores.ts`), modelagem de dados e listagem inicial de trechos. |
 | **Sprint 3** | **Protótipo Funcional Completo e Testes** | Implementação dos 5 fluxos principais (filtros por criticidade, busca por KM, Empty State, detalhes com telemetria, baixa operacional de roçada e validação de formulário de ocorrência) + bateria de testes manuais (`TESTES.md`). |
-| **Sprint 4** | **Versão Final, Build APK e Plano de Negócio** | Implementação das pendências da Sprint 3 (persistência **Offline-First** com fila de sincronização, captura de **GPS nativo** via `expo-location`, vínculo bidirecional entre ocorrências e trechos, **Painel Executivo de SLA & ROI**, correção do duplo `goBack`), configuração do **APK Android (`eas.json`)** e elaboração do **Plano de Negócio** para a Motiva. |
+| **Sprint 4** | **Versão Final, Build APK e Plano de Negócio** | Implementação das pendências da Sprint 3 (persistência **Offline-First** em disco via `AsyncStorage` com fila de sincronização, captura de **GPS nativo** via `expo-location`, vínculo bidirecional entre ocorrências e trechos, **Painel Executivo de SLA & ROI**, correção do duplo `goBack`), configuração do **APK Android (`eas.json`)** e elaboração do **Plano de Negócio** para a Motiva. |
 
 ---
 
@@ -72,7 +72,7 @@ A equipe optou estrategicamente por **manter e evoluir a arquitetura em React Na
 > O documento detalhado encontra-se em [`PLANO_DE_NEGOCIO.md`](./PLANO_DE_NEGOCIO.md). Abaixo está a síntese executiva da viabilidade comercial:
 
 ### 1. Proposta de Valor e Público-Alvo
-* **Proposta de Valor:** Reduzir em até **85% o risco de penalidades regulatórias da ARTESP** por vegetação acima de 30 cm e economizar de **22% a 30% no custo operacional de deslocamento** de frentes de roçada por meio de despacho preditivo e registro georreferenciado Offline-First.
+* **Proposta de Valor:** Meta de reduzir em até **85% o risco de penalidades regulatórias da ARTESP** por vegetação acima de 30 cm e de economizar de **22% a 30% no custo operacional de deslocamento** de frentes de roçada por meio de despacho preditivo e registro georreferenciado Offline-First *(metas estimadas pelo grupo, a validar em piloto)*.
 * **Público-Alvo (B2B Concessionárias Rodoviárias):**
   * **Cliente-Âncora:** Grupo **Motiva (CCR)** — iniciando pela SP-021 (Rodoanel, 177 km) com expansão para AutoBAn, ViaOeste, SPVias e RioSP (~4.475 km de malha total).
   * **Personas:** Coordenador de Conservação Viária, Fiscal de Campo / Inspetor de Tráfego e Gerente de Compliance Regulatório.
@@ -89,11 +89,11 @@ A equipe optou estrategicamente por **manter e evoluir a arquitetura em React Na
 * **APIs de Geocodificação, Clima (INMET) e Serviços Mobile:** R$ 850,00 / mês
 * **Equipe de Sustentação Técnica e Suporte N2/N3:** R$ 6.500,00 / mês
 * **Administrativo, Compliance LGPD e Tributos:** R$ 2.400,00 / mês
-* **Custo Operacional Total:** **R$ 11.400,00 / mês** (**R$ 136.800,00 / ano**), proporcionando superávit já no primeiro contrato piloto e **margem bruta de 72%** na expansão para novas concessões.
+* **Custo Operacional Total:** **R$ 11.400,00 / mês** (**R$ 136.800,00 / ano**), proporcionando superávit já no primeiro contrato piloto (puxado pela taxa de setup) e **margem operacional de ~73%** ao atingir 500 km de malha (MRR de R$ 42.500/mês contra R$ 11.400/mês de custo).
 
 ### 4. Diferenciais Competitivos e Riscos Mitigados
 * **Diferenciais:** Parametrização nativa das regras da ARTESP (gatilho de 30 cm), cálculo de ritmo diário de crescimento (`cm/dia`), operação em 3 toques sob sol intenso e funcionamento 100% **Offline-First**.
-* **Payback Imediato para a Motiva:** Uma única multa contratual evitada (~R$ 48,5 mil) cobre mais de 3 meses de assinatura integral da plataforma para toda a SP-021.
+* **Payback Imediato para a Motiva:** Uma única multa contratual evitada (valor ilustrativo de ~R$ 48,5 mil, a validar com o histórico de autuações da Motiva) cobre mais de 3 meses de assinatura integral da plataforma para toda a SP-021.
 
 ---
 
