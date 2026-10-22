@@ -17,9 +17,9 @@ Aplicativo mobile multiplataforma desenvolvido para **fiscalização georreferen
 
 ## 🔗 Links Oficiais de Entrega (Sprint 4)
 
-* **📦 Download do APK Final (Android):** [Baixar APK ROÇA.AI Viário](https://github.com/SEU-USUARIO/Sprint-4-CROSS-PLATAFORM/releases/latest) *(Substitua pelo link final do APK gerado)*
-* **🎬 Vídeo Final de Pitch e Demonstração (YouTube Não Listado):** [Assistir ao Pitch e Demonstração Final](https://youtu.be/SEU_LINK_DO_PITCH_SPRINT4) *(Substitua pelo link do vídeo da Sprint 4)*
-* **📹 Vídeo de Demonstração Técnica da Sprint 3 (Histórico):** [Assistir à Demonstração da Sprint 3](https://youtu.be/cqq3-ENDleY)
+* **📦 Download do APK Final (Android):** [Baixar APK ROÇA.AI Viário](https://drive.google.com/file/d/12z9jVlG2bBTqZ7pS9OBN8jcyESdd6fUN/view?usp=sharing) 
+* **🎬 Vídeo Final de Pitch e Demonstração (YouTube Não Listado):** [Assistir ao Pitch e Demonstração Final](https://youtu.be/tGszICtjB3E?si=cvmCK4M-d_rK3ruN) 
+* **📹 Vídeo de Demonstração Técnica da Sprint 3 (Histórico):** [Assistir à Demonstração da Sprint 3](https://youtu.be/cqq3-ENDleY?si=oaujZf2pABZN4iw-)
 * **📄 Documento Completo do Plano de Negócio:** [`PLANO_DE_NEGOCIO.md`](./PLANO_DE_NEGOCIO.md)
 * **📋 Relatório de Testes Manuais e Regressão:** [`TESTES.md`](./TESTES.md)
 
